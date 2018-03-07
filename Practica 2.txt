@@ -1,0 +1,181 @@
+MySQL Shell 1.0.11
+
+Copyright (c) 2016, 2017, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type '\help' or '\?' for help; '\quit' to exit.
+
+Currently in JavaScript mode. Use \sql to switch to SQL mode and execute queries.
+mysql-js> \sql
+Switching to SQL mode... Commands end with ;
+mysql-sql> \connect -c root@localhost
+Creating a Classic Session to 'root@localhost'
+Enter password: ****
+Your MySQL connection id is 27
+Server version: 5.7.21-log MySQL Community Server (GPL)
+No default schema selected; type \use <schema> to set one.
+mysql-sql> grant all privileges, grant option from 'prueba'@'localhost';
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ' grant option from 'prueba'@'localhost'' at line 1
+mysql-sql> grant all on world.* to 'prueba'@'localhost';
+Query OK, 0 rows affected (0.06 sec)
+mysql-sql> \connect -c prueba@localhost
+Creating a Classic Session to 'prueba@localhost'
+Enter password: ****
+Closing old connection...
+Your MySQL connection id is 28
+Server version: 5.7.21-log MySQL Community Server (GPL)
+No default schema selected; type \use <schema> to set one.
+mysql-sql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| datos_personal     |
+| ejercicios         |
+| mundo              |
+| mysql              |
+| performance_schema |
+| sakila             |
+| sys                |
+| world              |
++--------------------+
+9 rows in set (0.00 sec)
+mysql-sql>
+mysql-sql> \use world;
+MySQL Error (1049): Unknown database 'world;'
+mysql-sql> \use world
+Schema set to `world`.
+mysql-sql> grant all privileges, grant option from 'prueba'@'localhost';
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ' grant option from 'prueba'@'localhost'' at line 1
+mysql-sql> \connect -c root@localhost
+Creating a Classic Session to 'root@localhost'
+Enter password: ****
+Closing old connection...
+Your MySQL connection id is 29
+Server version: 5.7.21-log MySQL Community Server (GPL)
+No default schema selected; type \use <schema> to set one.
+mysql-sql> revoke all privileges, grant option from prueba@localhost;
+Query OK, 0 rows affected (0.02 sec)
+mysql-sql> \connect -c prueba@localhost
+Creating a Classic Session to 'prueba@localhost'
+Enter password: ****
+Closing old connection...
+Your MySQL connection id is 30
+Server version: 5.7.21-log MySQL Community Server (GPL)
+No default schema selected; type \use <schema> to set one.
+mysql-sql> \use world
+MySQL Error (1044): Access denied for user 'prueba'@'localhost' to database 'world'
+mysql-sql> \connect -c root@localhost
+Creating a Classic Session to 'root@localhost'
+Enter password: ****
+Closing old connection...
+Your MySQL connection id is 31
+Server version: 5.7.21-log MySQL Community Server (GPL)
+No default schema selected; type \use <schema> to set one.
+mysql-sql> grant all privileges, grant option from 'prueba'@'localhost';
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ' grant option from 'prueba'@'localhost'' at line 1
+mysql-sql> revoke all privileges, grant option from 'prueba'@'localhost';
+Query OK, 0 rows affected (0.01 sec)
+mysql-sql> grant all on world.city to 'prueba'@'localhost';
+Query OK, 0 rows affected (0.00 sec)
+mysql-sql> revoke all privileges, grant option from 'prueba'@'localhost';
+Query OK, 0 rows affected (0.00 sec)
+mysql-sql> grant select(name) on world.city to 'prueba'@'localhost';
+Query OK, 0 rows affected (0.13 sec)
+mysql-sql> \connect -c prueba@localhost
+Creating a Classic Session to 'prueba@localhost'
+Enter password: ****
+Closing old connection...
+Your MySQL connection id is 32
+Server version: 5.7.21-log MySQL Community Server (GPL)
+No default schema selected; type \use <schema> to set one.
+mysql-sql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| world              |
++--------------------+
+2 rows in set (0.00 sec)
+mysql-sql> select name from city limit 10;
+ERROR: 1046 (3D000): No database selected
+mysql-sql> \use world
+Schema set to `world`.
+mysql-sql> select name from city limit 10;
++----------------+
+| name           |
++----------------+
+| Kabul          |
+| Qandahar       |
+| Herat          |
+| Mazar-e-Sharif |
+| Amsterdam      |
+| Rotterdam      |
+| Haag           |
+| Utrecht        |
+| Eindhoven      |
+| Tilburg        |
++----------------+
+10 rows in set (0.06 sec)
+mysql-sql> \connect -c root@localhost
+Creating a Classic Session to 'root@localhost'
+Enter password: ****
+Closing old connection...
+Your MySQL connection id is 33
+Server version: 5.7.21-log MySQL Community Server (GPL)
+No default schema selected; type \use <schema> to set one.
+mysql-sql>
+
+
+Creacion y privilegios completos de un usuario
+
+mysql-sql> create user 'prueba1'@'localhost' identified by '1234';
+Query OK, 0 rows affected (0.00 sec)
+mysql-sql> grant all on *.* to 'prueba1'@'localhost';
+Query OK, 0 rows affected (0.00 sec)
+mysql-sql>
+
+Usuario con todo privilegio en un schema
+
+mysql-sql> create user 'prueba2'@'localhost' identified by '1234';
+Query OK, 0 rows affected (0.02 sec)
+mysql-sql> grant all on world.* to 'prueba'@'localhost';
+Query OK, 0 rows affected (0.00 sec)
+
+Usuario con todo privilegio en una tabla
+
+mysql-sql> create user 'prueba3'@'localhost' identified by '1234';
+Query OK, 0 rows affected (0.00 sec)
+mysql-sql> grant all on world.city to 'prueba3'@'localhost';
+Query OK, 0 rows affected (0.00 sec)
+
+Usuario con select en una tabla
+
+mysql-sql> create user 'prueba4'@'localhost' identified by '1234';
+Query OK, 0 rows affected (0.00 sec)
+mysql-sql> grant select on world.city to 'prueba'@'localhost';
+Query OK, 0 rows affected (0.00 sec)
+
+Usuario con select en una columna
+
+mysql-sql> create user 'prueba5'@'localhost' identified by '1234';
+Query OK, 0 rows affected (0.00 sec)
+mysql-sql> grant select (Name) on world.city to 'prueba5'@'localhost';
+Query OK, 0 rows affected (0.00 sec)
+
+Usuario con insert en una tabla
+
+mysql-sql> create user 'prueba6'@'localhost' identified by '1234';
+Query OK, 0 rows affected (0.00 sec)
+mysql-sql> grant insert on world.city to 'prueba6'@'localhost';
+Query OK, 0 rows affected (0.00 sec)
+
+Usuario con insert en una columna
+
+mysql-sql> create user 'prueba7'@'localhost' identified by '1234';
+Query OK, 0 rows affected (0.00 sec)
+mysql-sql> grant select (Name) on world.city to 'prueba7'@'localhost';
+Query OK, 0 rows affected (0.00 sec)
